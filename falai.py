@@ -5,7 +5,7 @@ from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv()) # read local .env file
 
 
-class FalAI():
+class FalAI:
     """Using image generator API from FalAI"""
     # enums
     class ImageSize(enum.IntEnum):

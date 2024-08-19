@@ -1,20 +1,19 @@
-import falai
 import aimage_factory
 
-factory = aimage_factory.ServiceFactory()
-
-factory.register_service('FALAI', FalAISvc)
-factory.register_service('HUGGINGFACE', HuggingFaceSvc)
-factory.register_service('REPLICATE', ReplicateSvc)
+from aimage_factory import factory
 
 class AImage:
-    def __init__(self):
+    def __init__(self, name):
         """initialize image generation parameters stored in a dict, vendor-specific
         """
         self._parameters = {}
+        self._service_provider = factory.get_service(name)
 
-    def __callable__(self, prompt, name):
-        service_provider = factory.get_service(name)
-        service_provider.send_request(prompt)
-        return service_provider.output_url()
+    def gen_image(self, prompt, **ignored):
+        output_url = self._service_provider.gen_image(prompt)
+        return output_url
 
+
+img = AImage("FALAI")
+output = img.gen_image("hello")
+print(output)

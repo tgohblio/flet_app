@@ -1,3 +1,6 @@
+import falai
+from falai import FalAI
+
 class ServiceFactory:
     def __init__(self):
         self._services = {}
@@ -10,3 +13,8 @@ class ServiceFactory:
         if not service:
             raise ValueError(name)
         return service() # instantiate the class
+
+factory = ServiceFactory()
+factory.register_service('FALAI', FalAI)
+# factory.register_service('HUGGINGFACE', HuggingFace)
+# factory.register_service('REPLICATE', Replicate)
