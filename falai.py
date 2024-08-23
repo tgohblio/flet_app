@@ -26,9 +26,9 @@ class FalAI:
     }
 
     def __init__(self, model="FLUX_SCHNELL") -> None:
-        self.photos = []
+        self._photos = []
         if model in FalAI.model_dict:
-            self.model = FalAI.model_dict[model]
+            self._model = FalAI.model_dict[model]
         else:
             print("Invalid model specified")
             sys.exit(1)
@@ -36,11 +36,11 @@ class FalAI:
 
     def gen_image(self, prompt: str, size=ImageSize.LANDSCAPE_4_3, infer_steps=28, cfg_val=3.5, num_images=1, safety_on=True) -> list:
         if prompt != "":
-            if self.model == "fal-ai/flux/schnell":
+            if self._model == FalAI.model_dict["FLUX_SCHNELL"]:
                 # maximum number of steps is 4
                 infer_steps = 4
-            self.handler = fal_client.submit(
-                self.model,
+            self._handler = fal_client.submit(
+                self._model,
                 arguments={
                     "prompt": prompt,
                     "image_size": FalAI.image_size[size],
@@ -51,21 +51,21 @@ class FalAI:
                 },
             )
 
-            for event in self.handler.iter_events(with_logs=True):
+            for event in self._handler.iter_events(with_logs=True):
                 if isinstance(event, fal_client.InProgress):
                     print("Request in progress")
                     # print(event)
 
-            result = self.handler.get() # block until returns a result
+            result = self._handler.get() # block until returns a result
 
-            self.photos.clear() # clears previous results
+            self._photos.clear() # clears previous results
             for index in range(num_images):
                 img = result["images"][index]["url"]
-                self.photos.append(img)
+                self._photos.append(img)
                 print(img)
         else:
             raise ValueError("Error! Prompt is empty")
-        return self.photos
+        return self._photos
 
     """
     returned output:
