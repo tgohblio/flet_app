@@ -64,7 +64,7 @@ class FalAI:
                 self.photos.append(img)
                 print(img)
         else:
-            print("Error! Prompt is empty")
+            raise ValueError("Error! Prompt is empty")
         return self.photos
 
     """

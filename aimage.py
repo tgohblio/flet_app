@@ -1,19 +1,26 @@
-import aimage_factory
+from aimage_factory import ServiceFactory
+from falai import FalAI
+from huggingface import HuggingFace
 
-from aimage_factory import factory
 
 class AImage:
+    ai_services = ("FALAI", "Huggingface", "Replicate")
+
     def __init__(self, name):
         """initialize image generation parameters stored in a dict, vendor-specific
         """
         self._parameters = {}
-        self._service_provider = factory.get_service(name)
+        self._instance = factory.get_service(name)
+
+    def __call__(self, name):
+        self._instance = factory.get_service(name)
+        return self._instance
 
     def gen_image(self, prompt, **ignored):
-        output_url = self._service_provider.gen_image(prompt)
+        output_url = self._instance.gen_image(prompt)
         return output_url
 
 
-img = AImage("FALAI")
-output = img.gen_image("hello")
-print(output)
+factory = ServiceFactory()
+factory.register_service('FALAI', FalAI)
+factory.register_service('Huggingface', HuggingFace)
