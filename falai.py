@@ -1,8 +1,9 @@
 import fal_client
-import enum, sys
+import enum
+import sys
 
 from dotenv import load_dotenv, find_dotenv
-_ = load_dotenv(find_dotenv()) # read local .env file
+_ = load_dotenv(find_dotenv())  # read local .env file
 
 
 class FalAI:
@@ -18,22 +19,17 @@ class FalAI:
 
     # class variables
     image_size = ["square_hd", "square", "portrait_4_3", "portrait_16_9", "landscape_4_3", "landscape_16_9"]
-    model_dict = { 
+    model_dict = {
         "AURA_FLOW": "fal-ai/aura-flow",
-        "FLUX_DEV": "fal-ai/flux/dev", 
+        "FLUX_DEV": "fal-ai/flux/dev",
         "FLUX_SCHNELL": "fal-ai/flux/schnell",
         "FLUX_PRO": "fal-ai/flux-pro"
     }
 
     def __init__(self, model="FLUX_SCHNELL") -> None:
         self._photos = []
-        if model in FalAI.model_dict:
-            self._model = FalAI.model_dict[model]
-        else:
-            print("Invalid model specified")
-            sys.exit(1)
-
-
+        self.model = FalAI.model_dict[model]
+    
     def gen_image(self, prompt: str, size=ImageSize.LANDSCAPE_4_3, infer_steps=28, cfg_val=3.5, num_images=1, safety_on=True) -> list:
         if prompt != "":
             if self._model == FalAI.model_dict["FLUX_SCHNELL"]:
@@ -56,9 +52,9 @@ class FalAI:
                     print("Request in progress")
                     # print(event)
 
-            result = self._handler.get() # block until returns a result
+            result = self._handler.get()  # block until returns a result
 
-            self._photos.clear() # clears previous results
+            self._photos.clear()  # clears previous results
             for index in range(num_images):
                 img = result["images"][index]["url"]
                 self._photos.append(img)
@@ -95,9 +91,16 @@ class FalAI:
             false
         ]
     """
-    # generate_image(
-    #     prompt="selfie shot of spiderman falling on his back from the sky, waving a mini singapore flag, against a backdrop of dark green army parachuters over the singapore bay",
-    #     size = ImageSize.LANDSCAPE_4_3,
-    #     num_images=4,
-    #     safety_on=False           
-    # )
+
+
+class FalAIServiceBuilder:
+    def __init__(self):
+        self._instance = None
+
+    def __call__(self, model):
+        if not self._instance and model in FalAI.model_dict:
+            self._instance = FalAI(model)
+        return self._instance
+    
+    def select_model(self, model):
+        self._instance.model = FalAI.model_dict[model]
