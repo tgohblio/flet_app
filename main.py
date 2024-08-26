@@ -57,19 +57,35 @@ def main(page: ft.Page):
         on_change=modelgroup_changed,
     )
 
+    # Add a loading widget
+    loading_widget = ft.ProgressRing(visible=False)
+
+    # Use Overlay to stack the image and loading widget
+    image_with_loading = ft.Stack(
+        [
+            img,
+            loading_widget
+        ],
+        alignment=ft.alignment.center
+    )
+
     def create_image(e):
+        loading_widget.visible = True
+        page.update()
+
         ai_svc = AImage(aiservice_radio_button.value, aimodel_radio_button.value)
-        if ai_svc != None:
-            if not input_field.value:
-                input_field.value = input_field.hint_text
-            photos = ai_svc.gen_image(input_field.value, safety_on=nsfw_switch.value)
-            img.src = photos[0]
+        if not input_field.value:
+            input_field.value = input_field.hint_text
+        photos = ai_svc.gen_image(input_field.value, safety_on=nsfw_switch.value)
+        img.src = photos[0]
+
+        loading_widget.visible = False
         page.update()
 
     submit_button = ft.ElevatedButton("Send", on_click=create_image)
 
     tab1_content = ft.Column([
-            img,
+            image_with_loading,
             ft.Text("Enter text below:"),
             input_field,
             aiservice_radio_button,
@@ -77,7 +93,6 @@ def main(page: ft.Page):
             submit_button,
             nsfw_switch
         ],
-        scroll=ft.ScrollMode.AUTO
     )
 
     tab2_content = ft.Column([
