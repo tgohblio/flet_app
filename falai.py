@@ -27,16 +27,17 @@ class FalAI:
     }
 
     def __init__(self, model="FLUX_SCHNELL") -> None:
+        self.model = model
+        self.model_url = FalAI.model_dict[model]
         self._photos = []
-        self.model = FalAI.model_dict[model]
     
     def gen_image(self, prompt: str, size=ImageSize.LANDSCAPE_4_3, infer_steps=28, cfg_val=3.5, num_images=1, safety_on=True) -> list:
         if prompt != "":
-            if self._model == FalAI.model_dict["FLUX_SCHNELL"]:
+            if self.model == "FLUX_SCHNELL":
                 # maximum number of steps is 4
                 infer_steps = 4
             self._handler = fal_client.submit(
-                self._model,
+                self.model_url,
                 arguments={
                     "prompt": prompt,
                     "image_size": FalAI.image_size[size],
@@ -98,9 +99,13 @@ class FalAIServiceBuilder:
         self._instance = None
 
     def __call__(self, model):
-        if not self._instance and model in FalAI.model_dict:
+        if model not in FalAI.model_dict:
+            self._instance = None
+        elif not self._instance:
             self._instance = FalAI(model)
+        elif self._instance and model != self._instance.model:
+            self._instance.model = model
+            self._instance.model_url = FalAI.model_dict[model]
+
         return self._instance
     
-    def select_model(self, model):
-        self._instance.model = FalAI.model_dict[model]
