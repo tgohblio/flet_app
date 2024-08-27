@@ -12,7 +12,7 @@ def main(page: ft.Page):
     )
     second_tab_text = ft.Text("Text from first tab will appear here")
     img = ft.Image(
-        src=f"/blank-photo.jpg",
+        src="blank-photo.jpg",
         width=512,
         height=512,
         fit=ft.ImageFit.CONTAIN
