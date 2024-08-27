@@ -31,7 +31,7 @@ def main(page: ft.Page):
                 ft.Radio(
                     value=AImage.ai_services[1], label=AImage.ai_services[1]),
                 ft.Radio(
-                    value=AImage.ai_services[2], label=AImage.ai_services[2]),
+                    value=AImage.ai_services[2], label=AImage.ai_services[2])
             ]
         ),
         on_change=aiservice_changed,
@@ -49,9 +49,7 @@ def main(page: ft.Page):
                 ft.Radio(
                     value=AImage.model[1], label=AImage.model[1]),
                 ft.Radio(
-                    value=AImage.model[2], label=AImage.model[2]),
-                ft.Radio(
-                    value=AImage.model[3], label=AImage.model[3]),
+                    value=AImage.model[2], label=AImage.model[2])
             ]
         ),
         on_change=model_changed,
