@@ -1,0 +1,6 @@
+flet>=0.23.0
+python-dotenv
+gradio-client
+fal-client
+replicate
+pillow
