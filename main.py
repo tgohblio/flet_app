@@ -19,7 +19,7 @@ def main(page: ft.Page):
     )
     nsfw_switch = ft.Switch(label="NSFW On", value=True)
 
-    def aiservice_radiogroup_changed(e):
+    def aiservice_changed(e):
         page.update()
 
     aiservice_radio_button = ft.RadioGroup(
@@ -34,10 +34,10 @@ def main(page: ft.Page):
                     value=AImage.ai_services[2], label=AImage.ai_services[2]),
             ]
         ),
-        on_change=aiservice_radiogroup_changed,
+        on_change=aiservice_changed,
     )
 
-    def modelgroup_changed(e):
+    def model_changed(e):
         page.update()
 
     aimodel_radio_button = ft.RadioGroup(
@@ -54,7 +54,7 @@ def main(page: ft.Page):
                     value=AImage.model[3], label=AImage.model[3]),
             ]
         ),
-        on_change=modelgroup_changed,
+        on_change=model_changed,
     )
 
     # Add a loading widget
@@ -93,6 +93,9 @@ def main(page: ft.Page):
             submit_button,
             nsfw_switch
         ],
+        spacing = 1,
+        alignment = ft.MainAxisAlignment.START,
+        horizontal_alignment = ft.CrossAxisAlignment.CENTER
     )
 
     tab2_content = ft.Column([
@@ -100,19 +103,20 @@ def main(page: ft.Page):
         second_tab_text
     ])
 
-    # Center the content on the page
-    tab1_content.vertical_alignment = ft.MainAxisAlignment.CENTER
-    tab1_content.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    def tab_changed(e):
+        tab1_content.visible = True if e.control.selected_index == 0 else False
+        tab2_content.visible = True if e.control.selected_index == 1 else False
+        page.update()
 
-    tabs = ft.Tabs(
-        selected_index=0,
-        tabs=[
-            ft.Tab(text="Input", content=tab1_content),
-            ft.Tab(text="Display", content=tab2_content),
-        ]
+    page.navigation_bar = ft.NavigationBar(
+        destinations=[
+            ft.NavigationBarDestination(icon=ft.icons.DRAW, label="Create"),
+            ft.NavigationBarDestination(icon=ft.icons.COMMUTE, label="Commute"),
+        ],
+        on_change=tab_changed
     )
 
-    page.add(tabs)
-
+    page.add(ft.Column([tab1_content, tab2_content]))
+    page.scroll = ft.ScrollMode.ALWAYS
 
 ft.app(target=main, assets_dir="assets")
