@@ -17,48 +17,53 @@ class HuggingFace:
         self.model = model
         self.model_url = HuggingFace.model_dict[model]
         self._photos = []
-        self._client = Client(self.model_url)
+        self.client = Client(self.model_url)
 
     def gen_image(self, prompt: str, size="", infer_steps=28, cfg_val=3.5, num_images=1, safety_on=True) -> list:
         if not prompt:
             return []
         
-        match self.model:
-            case "FLUX_SCHNELL":
-                # maximum number of steps is 4
-                result = self._client.predict(
-                        prompt=prompt,
-                        seed=0,
-                        randomize_seed=True,
-                        width=1024,
-                        height=1024,
-                        num_inference_steps=4,
-                        api_name="/infer"
-                )
-            case "FLUX_REALISM":
-                result = self._client.predict(
-                        prompt=prompt,
-                        cfg_scale=3.2,
-                        steps=infer_steps,
-                        randomize_seed=False,
-                        seed=3981632454,
-                        width=1024,
-                        height=1024,
-                        lora_scale=0.85,
-                        api_name="/run_lora"
-                )
-            case _:
-                result = self._client.predict(
-                        prompt=prompt,
-                        seed=0,
-                        randomize_seed=True,
-                        width=1024,
-                        height=1024,
-                        guidance_scale=cfg_val,
-                        num_inference_steps=infer_steps,
-                        api_name="/infer"
-                )
-
+        try:
+            match self.model:
+                case "FLUX_SCHNELL":
+                    # maximum number of steps is 4
+                    result = self.client.predict(
+                            prompt=prompt,
+                            seed=0,
+                            randomize_seed=True,
+                            width=1024,
+                            height=1024,
+                            num_inference_steps=4,
+                            api_name="/infer"
+                    )
+                case "FLUX_REALISM":
+                    result = self.client.predict(
+                            prompt=prompt,
+                            cfg_scale=3.2,
+                            steps=infer_steps,
+                            randomize_seed=False,
+                            seed=3981632454,
+                            width=1024,
+                            height=1024,
+                            lora_scale=0.85,
+                            api_name="/run_lora"
+                    )
+                case _:
+                    result = self.client.predict(
+                            prompt=prompt,
+                            seed=0,
+                            randomize_seed=True,
+                            width=1024,
+                            height=1024,
+                            guidance_scale=cfg_val,
+                            num_inference_steps=infer_steps,
+                            api_name="/infer"
+                    )
+        except:
+            """usually timeout or exceed free usage"""
+            self._photos.clear()
+            result = ["blank-photo.jpg"]
+            print("Exception caught from Huggingface")
         # result returns a tuple of (filepath, seed)
         self._photos.append(result[0])
         return self._photos
@@ -76,5 +81,5 @@ class HFServiceBuilder:
         elif self._instance and model != self._instance.model:
             self._instance.model = model
             self._instance.model_url = HuggingFace.model_dict[model]
-            self._client = Client(self._instance.model_url)
+            self._instance.client = Client(self._instance.model_url)
         return self._instance
