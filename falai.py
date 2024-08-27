@@ -106,6 +106,5 @@ class FalAIServiceBuilder:
         elif self._instance and model != self._instance.model:
             self._instance.model = model
             self._instance.model_url = FalAI.model_dict[model]
-
         return self._instance
     
