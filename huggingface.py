@@ -76,5 +76,5 @@ class HFServiceBuilder:
         elif self._instance and model != self._instance.model:
             self._instance.model = model
             self._instance.model_url = HuggingFace.model_dict[model]
-
+            self._client = Client(self._instance.model_url)
         return self._instance
