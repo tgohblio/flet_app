@@ -87,8 +87,12 @@ def main(page: ft.Page):
         ai_svc = AImage(aiservice_radio_button.value, aimodel_radio_button.value)
         if not input_field.value:
             input_field.value = input_field.hint_text
-        photos = ai_svc.gen_image(input_field.value, safety_on=nsfw_switch.value)
-        img.src = photos[0]
+        output, format = ai_svc.gen_image(input_field.value, safety_on=nsfw_switch.value)
+        if format == "base64":
+            img.src_base64 = output
+        else:
+            # output is a file path
+            img.src = output
 
         loading_widget.visible = False
         page.update()

@@ -1,6 +1,5 @@
 import fal_client
 import enum
-import sys
 
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv())  # read local .env file
@@ -31,7 +30,7 @@ class FalAI:
         self.model_url = FalAI.model_dict[model]
         self._photos = []
     
-    def gen_image(self, prompt: str, size=ImageSize.LANDSCAPE_4_3, infer_steps=28, cfg_val=3.5, num_images=1, safety_on=True) -> list:
+    def gen_image(self, prompt: str, size=ImageSize.LANDSCAPE_4_3, infer_steps=28, cfg_val=3.5, num_images=1, safety_on=True) -> tuple:
         if prompt != "":
             if self.model == "FLUX_SCHNELL":
                 # maximum number of steps is 4
@@ -62,7 +61,7 @@ class FalAI:
                 print(img)
         else:
             raise ValueError("Error! Prompt is empty")
-        return self._photos
+        return (self._photos[0], "url")
 
     """
     returned output:

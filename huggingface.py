@@ -1,5 +1,4 @@
-import enum
-import sys
+import base64
 
 from gradio_client import Client
 from dotenv import load_dotenv, find_dotenv
@@ -19,7 +18,7 @@ class HuggingFace:
         self._photos = []
         self.client = Client(self.model_url)
 
-    def gen_image(self, prompt: str, size="", infer_steps=28, cfg_val=3.5, num_images=1, safety_on=True) -> list:
+    def gen_image(self, prompt: str, size="", infer_steps=28, cfg_val=3.5, num_images=1, safety_on=True) -> tuple:
         if not prompt:
             return []
         
@@ -59,15 +58,23 @@ class HuggingFace:
                             num_inference_steps=infer_steps,
                             api_name="/infer"
                     )
-        except:
-            """usually timeout or exceed free usage"""
-            self._photos.clear()
-            result = ["blank-photo.jpg"]
-            print("Exception caught from Huggingface")
-        # result returns a tuple of (filepath, seed)
-        self._photos.append(result[0])
-        return self._photos
 
+            # result returns a tuple (file path, seed)
+            file_path = result[0]
+            # read the image file in binary mode and encode as base64 string
+            with open(file_path, "rb") as f:
+                image_bytes = f.read()
+                base64_str = base64.b64encode(image_bytes).decode('utf-8')
+
+            self._photos.clear()
+            self._photos.append(base64_str)
+            return (self._photos[0], "base64")
+
+        except Exception as e:
+            self._photos.clear()
+            self._photos.append("./assets/blank-photo.jpg")
+            print(f"Exception caught from Huggingface: {e}")
+            return (self._photo[0], "url")
 
 class HFServiceBuilder:
     def __init__(self):

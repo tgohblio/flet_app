@@ -24,6 +24,6 @@ class AImage:
         if self._instance == None:
             raise Exception("Error! Object not created")
 
-    def gen_image(self, prompt, **ignored):
-        output_url = self._instance.gen_image(prompt)
-        return output_url
+    def gen_image(self, prompt, **ignored) -> tuple:
+        output, format = self._instance.gen_image(prompt)
+        return (output, format)
