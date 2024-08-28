@@ -5,12 +5,13 @@ from aimage import AImage
 
 def main(page: ft.Page):
     page.title = "Two-Tab Flet App"
+    page.scroll = ft.ScrollMode.ALWAYS
 
+    # Define first tab content
     input_field = ft.TextField(
         label="Enter prompt",
         hint_text="cat perching on a tree branch on a moonlit night",
     )
-    second_tab_text = ft.Text("Text from first tab will appear here")
     img = ft.Image(
         src="blank-photo.jpg",
         width=512,
@@ -96,6 +97,9 @@ def main(page: ft.Page):
         horizontal_alignment = ft.CrossAxisAlignment.CENTER
     )
 
+    # Define second tab content
+    second_tab_text = ft.Text("Text from first tab will appear here")
+
     tab2_content = ft.Column([
         ft.Text("Text from first tab:"),
         second_tab_text
@@ -111,10 +115,13 @@ def main(page: ft.Page):
             ft.NavigationBarDestination(icon=ft.icons.DRAW, label="Create"),
             ft.NavigationBarDestination(icon=ft.icons.COMMUTE, label="Commute"),
         ],
+        selected_index=0,  # Set the default selected index here
         on_change=tab_changed
     )
 
+    # setup default view on first tab i.e. draw
+    tab2_content.visible = False
+    tab1_content.visible = True
     page.add(ft.Column([tab1_content, tab2_content]))
-    page.scroll = ft.ScrollMode.ALWAYS
 
 ft.app(target=main, assets_dir="assets")
