@@ -74,7 +74,7 @@ class HuggingFace:
             self._photos.clear()
             self._photos.append("./assets/blank-photo.jpg")
             print(f"Exception caught from Huggingface: {e}")
-            return (self._photo[0], "url")
+            return (self._photos[0], "url")
 
 class HFServiceBuilder:
     def __init__(self):
