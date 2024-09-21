@@ -8,7 +8,7 @@ factory.register_builder('Huggingface', HFServiceBuilder())
 
 
 class AImage:
-    ai_services = ("FalAI", "Huggingface", "Replicate")
+    ai_services = ("FalAI", "Huggingface")
     model = ("FLUX_DEV", "FLUX_SCHNELL", "FLUX_REALISM", "AURA_FLOW")
 
     def __init__(self, service_name, model, **kwargs):

@@ -9,7 +9,7 @@ def main(page: ft.Page):
     Args:
         page (ft.Page): The Flet page object.
     """
-    page.title = "Two-Tab Flet App"
+    page.title = "Flet App"
     page.scroll = ft.ScrollMode.ALWAYS
 
     # Define first tab content
@@ -38,8 +38,7 @@ def main(page: ft.Page):
         value=AImage.ai_services[0],
         content=ft.Row([
             ft.Radio(value=AImage.ai_services[0], label=AImage.ai_services[0]),
-            ft.Radio(value=AImage.ai_services[1], label=AImage.ai_services[1]),
-            ft.Radio(value=AImage.ai_services[2], label=AImage.ai_services[2])
+            ft.Radio(value=AImage.ai_services[1], label=AImage.ai_services[1])
         ]),
         on_change=aiservice_changed,
     )
@@ -136,7 +135,7 @@ def main(page: ft.Page):
     page.navigation_bar = ft.NavigationBar(
         destinations=[
             ft.NavigationBarDestination(icon=ft.icons.DRAW, label="Create"),
-            ft.NavigationBarDestination(icon=ft.icons.COMMUTE, label="Commute"),
+            ft.NavigationBarDestination(icon=ft.icons.CHAT_BUBBLE, label="Chat"),
         ],
         selected_index=0,  # Set the default selected index here
         on_change=tab_changed
