@@ -24,6 +24,10 @@ class AImage:
         if self._instance == None:
             raise Exception("Error! Object not created")
 
-    def gen_image(self, prompt, **ignored) -> tuple:
-        output, format = self._instance.gen_image(prompt)
+    def gen_image(self, prompt, **kwargs) -> tuple:
+        if "safety_on" in kwargs.keys():
+            result = kwargs.get("safety_on")
+            output, format = self._instance.gen_image(prompt, safety_on=result)
+        else:
+            output, format = self._instance.gen_image(prompt)
         return (output, format)

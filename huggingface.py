@@ -20,7 +20,7 @@ class HuggingFace:
 
     def gen_image(self, prompt: str, size="", infer_steps=28, cfg_val=3.5, num_images=1, safety_on=True) -> tuple:
         if not prompt:
-            return []
+            raise Exception
         
         try:
             match self.model:
@@ -71,9 +71,9 @@ class HuggingFace:
             return (self._photos[0], "base64")
 
         except Exception as e:
+            print(f"Exception caught from Huggingface: {e}")
             self._photos.clear()
             self._photos.append("./assets/blank-photo.jpg")
-            print(f"Exception caught from Huggingface: {e}")
             return (self._photos[0], "url")
 
 class HFServiceBuilder:
